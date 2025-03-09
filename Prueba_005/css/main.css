@@ -1,0 +1,166 @@
+/* Text Elements */
+
+h3.heading-1 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #31377c;
+  font-size: 21px;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Layout Elements */
+
+.container.Cabecera {
+  display: grid;
+  padding: 10px;
+  background-color: #48ffa8;
+
+  grid-template-columns: 10% auto;
+  grid-template-rows: auto;
+}
+
+.container.Plataforma {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 100vw;
+  height: 92vh;
+
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -moz-box-orient: vertical;
+  -moz-box-direction: normal;
+}
+
+a.responsive-picture.picture-link-1 {
+  width: 40px;
+  height: 40px;
+}
+
+a.responsive-picture.picture-link-1 > picture {
+  height: 40px;
+}
+
+/*Estilos de tablas*/
+
+.datosTable {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  min-width: 400px;
+  align-self: center;
+  max-width: 90%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.datosTable thead tr {
+  background-color: #48ffa8;
+  color: #31377c;
+  text-align: left;
+}
+
+.datosTable th,
+.datosTable td {
+  padding: 12px 15px;
+}
+
+.datosTable tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.datosTable tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.datosTable tbody tr:last-of-type {
+  border-bottom: 2px solid #009879;
+}
+
+/*Estilos de botones*/
+
+/*
+.botonCargar {
+  padding: 10px 20px;
+  background-color: #48ffa8;
+  color: #31377c;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center;
+  min-width: 150px;
+  max-width: 200px;
+}
+.botonCargar:hover {
+  background-color: #31377c;
+  color: #48ffa8;
+}
+*/
+
+.viewButton {
+  padding: 8px 16px;
+  background-color: #48ffa8;
+  color: #31377c;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center;
+  min-width: 50px;
+  max-width: 100px;
+  text-decoration: none;
+}
+.viewButton:hover {
+  background-color: #31377c;
+  color: #48ffa8;
+}
+
+/*Estilos de Select*/
+
+select {
+  padding: 10px 20px;
+  background-color: #48ffa8;
+  border: none;
+  border-radius: 5px;
+  color: #31377c;
+  min-width: 150px;
+  max-width: 300px;
+  align-self: center;
+}
+
+h1,h2,h3 {
+  align-self: center;
+}
+
+/* Modal para archivos*/
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+}
+
+.modal-content {
+  background: white;
+  width: 80%;
+  max-width: 1000px;
+  margin: 5% auto;
+  padding: 0px 10px 10px 10px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+  float: right;
+  font-size: 30px;
+  cursor: pointer;
+}

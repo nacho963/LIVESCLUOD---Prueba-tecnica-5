@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="RSD 5.0.3541" />
+    <title>Index_Prueba_0</title>
+    <link rel="stylesheet" href="css/vanillacss.min.css" />
+    <link rel="stylesheet" href="css/wireframe-theme.min.css" />
+    <script>
+      document.createElement("picture");
+    </script>
+    <script
+      class="picturefill"
+      async="async"
+      src="js/picturefill.min.js"
+    ></script>
+    <link rel="stylesheet" href="css/main.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Montserrat"
+    />
+    <script src="js/jquery.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container Cabecera" id="Cabecera">
+      <a href="#" class="responsive-picture picture-link-1">
+        <picture>
+          <img
+            alt="Placeholder Picture"
+            width="500"
+            height="500"
+            src="./images/Logo.png"
+            loading="lazy"
+          />
+        </picture>
+      </a>
+      <h3 class="heading-1">Entornos de prueba LIVESCLOUD</h3>
+    </div>
+    <div class="container Plataforma" id="Plataforma">
+      <!-- Tenats -->
+
+      <h3>Selección de Tenat</h3>
+      <select id="tenantSelect">
+        <option value="">-- Selecciona Tenant --</option>
+      </select>
+
+      <!-- Empresa-->
+
+      <h3>Selección de Empresa</h3>
+      <select id="empresaSelect" disabled>
+        <option value="">-- Selecciona Empresa --</option>
+      </select>
+
+      <!-- Tabla de datos -->
+
+      <table class="datosTable" id="datosTable">
+        <thead>
+          <tr>
+            <th>&numero; Factura</th>
+            <th>Fecha</th>
+            <th>NETO</th>
+            <th>IVA</th>
+            <th>BRUTO</th>
+            <th>Modalidad de Pago</th>
+            <th>Visualizar Factura</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <!-- Modal -->
+
+      <div id="documentModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <iframe
+            id="documentFrame"
+            src=""
+            style="width: 100%; height: 500px; border: none"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        let selectedTenant = null;
+
+        function loadData(tenant, empresa) {
+          $.ajax({
+            url: "fetch_data.php",
+            method: "GET",
+            data: { tenant: tenant, empresa: empresa },
+            dataType: "json",
+            success: function (data) {
+              console.log("Data received:", data);
+
+              let tableBody = $("#datosTable tbody");
+              tableBody.empty(); // Limpiar la tabla antes de cargar nuevos datos
+
+              if (Array.isArray(data) && data.length > 0) {
+                data.forEach(function (item) {
+                  let viewButton = item.RutaDoc
+                    ? `<button class="viewButton" data-url="${item.RutaDoc}">Visualizar</button>`
+                    : `<span class="text-muted">No disponible</span>`;
+
+                  tableBody.append(`
+                        <tr >
+                            <td>${item.FacturaNUM}</td>
+                            <td>${item.FacturaDATE}</td>
+                            <td>${item.FacturaNETO}</td>
+                            <td>${item.FacturaIVA}</td>
+                            <td>${item.FacturaBRUTO}</td>
+                            <td>${item.FacturaTERMINOPAGO}</td>
+                            <td>${viewButton}</td>
+                        </tr>
+                    `);
+                });
+
+                // Visualizacion de archivo
+                $(".viewButton").click(function () {
+                  let docUrl = $(this).data("url");
+                  $("#documentFrame").attr("src", docUrl);
+                  $("#documentModal").css("display", "block");
+                });
+
+                // Cierre de modal
+                $(".close").click(function () {
+                  $("#documentModal").css("display", "none");
+                });
+
+                $(window).click(function (event) {
+                  if (event.target.id === "documentModal") {
+                    $("#documentModal").css("display", "none");
+                  }
+                });
+              } else {
+                tableBody.append(
+                  '<tr><td colspan="7">No se encontraron datos.</td></tr>'
+                );
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error("AJAX Error:", status, error);
+            },
+          });
+        }
+
+        function loadTenants() {
+          $.ajax({
+            url: "fetch_tenants.php",
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+              console.log("Tenants recibidos:", data); // Debugging
+              if (Array.isArray(data) && data.length > 0) {
+                $("#tenantSelect")
+                  .empty()
+                  .append(`<option value="">-- Selecciona Tenant --</option>`);
+                data.forEach(function (tenant) {
+                  $("#tenantSelect").append(
+                    `<option value="${tenant.tenant_code}">${tenant.tenant_code}</option>`
+                  );
+                });
+              } else {
+                console.warn("No se encontraron Tenants");
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error("AJAX Error:", status, error);
+            },
+          });
+        }
+
+        // Cargar tenants
+        $(document).ready(function () {
+          loadTenants();
+        });
+
+        function loadTenantsData(tenant) {
+          $.ajax({
+            url: "fetch_companies.php",
+            method: "GET",
+            data: { tenant: tenant },
+            dataType: "json",
+            success: function (data) {
+              console.log("Empresas recibidas:", data); // Debugging
+
+              let empresaSelect = $("#empresaSelect");
+              empresaSelect
+                .empty()
+                .append(`<option value="">-- Selecciona Empresa --</option>`);
+
+              if (Array.isArray(data) && data.length > 0) {
+                data.forEach(function (empresa) {
+                  empresaSelect.append(
+                    `<option value="${empresa}">${empresa}</option>`
+                  );
+                });
+
+                empresaSelect.prop("disabled", false);
+              } else {
+                empresaSelect.prop("disabled", true);
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error("AJAX Error:", status, error);
+            },
+          });
+        }
+
+        $("#tenantSelect").change(function () {
+          selectedTenant = $(this).val();
+          console.log("Tenant seleccionado:", selectedTenant); // Debugging
+          $("#datosTable tbody").empty(); // Limpiar la tabla al cambiar el tenant, borrar si es requerido
+          if (selectedTenant) {
+            loadTenantsData(selectedTenant); // Cargar empresas
+            $("#empresaSelect")
+              .prop("disabled", true)
+              .empty()
+              .append(`<option>Cargando...</option>`);
+          }
+        });
+
+        $("#empresaSelect").change(function () {
+          let selectedEmpresa = $(this).val();
+          console.log("Empresa seleccionada:", selectedEmpresa); // Debugging
+          if (selectedTenant && selectedEmpresa) {
+            loadData(selectedTenant, selectedEmpresa); // Cargar datos completos
+          }
+        });
+      });
+    </script>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/outofview.js"></script>
+  </body>
+</html>
